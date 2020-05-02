@@ -22,7 +22,26 @@ app.post('/api/create', (req, res) => {
         .collection('items')
         .doc('/' + req.body.id + '/')
         .create({ item: req.body.item });
-      return res.status(200).send();
+      return res.status(200).send('Item Added Successfully');
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  })();
+});
+
+app.post('/customer/create', (req, res) => {
+  (async () => {
+    try {
+      await db
+        .collection('customers')
+        .doc()
+        .create({
+          name: req.body.name,
+          email: req.body.email,
+          image: req.body.image
+        });
+      return res.status(200).send('Item Added Successfully');
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -35,6 +54,20 @@ app.get('/api/read/:item_id', (req, res) => {
   (async () => {
     try {
       const document = db.collection('items').doc(req.params.item_id);
+      let item = await document.get();
+      let response = item.data();
+      return res.status(200).send(response);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  })();
+});
+
+app.get('/customer/read/:item_id', (req, res) => {
+  (async () => {
+    try {
+      const document = db.collection('customers').doc(req.params.item_id);
       let item = await document.get();
       let response = item.data();
       return res.status(200).send(response);
@@ -69,6 +102,31 @@ app.get('/api/read', (req, res) => {
   })();
 });
 
+app.get('/customer/read', (req, res) => {
+  (async () => {
+    try {
+      let query = db.collection('customers');
+      let response = [];
+      await query.get().then(querySnapshot => {
+        let docs = querySnapshot.docs;
+        for (let doc of docs) {
+          const selectedItem = {
+            id: doc.id,
+            name: doc.data().name,
+            email: doc.data().email,
+            image: doc.data().image
+          };
+          response.push(selectedItem);
+        }
+      });
+      return res.status(200).send(response);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  })();
+});
+
 // update
 app.put('/api/update/:item_id', (req, res) => {
   (async () => {
@@ -85,11 +143,41 @@ app.put('/api/update/:item_id', (req, res) => {
   })();
 });
 
+app.put('/customer/update/:item_id', (req, res) => {
+  (async () => {
+    try {
+      const document = db.collection('customers').doc(req.params.item_id);
+      await document.update({
+        name: req.body.name,
+        email: req.body.email,
+        image: req.body.image
+      });
+      return res.status(200).send();
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  })();
+});
+
 // delete
 app.delete('/api/delete/:item_id', (req, res) => {
   (async () => {
     try {
       const document = db.collection('items').doc(req.params.item_id);
+      await document.delete();
+      return res.status(200).send();
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  })();
+});
+
+app.delete('/customer/delete/:item_id', (req, res) => {
+  (async () => {
+    try {
+      const document = db.collection('customers').doc(req.params.item_id);
       await document.delete();
       return res.status(200).send();
     } catch (error) {
