@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "fir-node-1bf4a"
+    "default": "fir-node-1bf4a",
+    "firebasedb": "fir-node-1bf4a"
   }
 }

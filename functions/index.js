@@ -22,7 +22,7 @@ app.post('/api/create', (req, res) => {
         .collection('items')
         .doc('/' + req.body.id + '/')
         .create({ item: req.body.item });
-      return res.status(200).send('Item Added Successfully');
+      return res.status(200).send();
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -41,7 +41,7 @@ app.post('/customer/create', (req, res) => {
           email: req.body.email,
           image: req.body.image
         });
-      return res.status(200).send('Item Added Successfully');
+      return res.status(200).send();
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
